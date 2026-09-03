@@ -3,7 +3,11 @@ import createHttpError from 'http-errors';
 
 import { User } from '../models/user.js';
 import { Session } from '../models/session.js';
-import { createSession, setSessionCookies } from '../services/auth.js';
+import {
+  clearSessionCookies,
+  createSession,
+  setSessionCookies,
+} from '../services/auth.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -66,6 +70,9 @@ export const refreshUserSession = async (req, res, next) => {
     }
 
     if (session.refreshTokenValidUntil < new Date()) {
+      await Session.deleteOne({ _id: session._id });
+      clearSessionCookies(res);
+
       throw createHttpError(401, 'Session token expired');
     }
 
@@ -90,9 +97,7 @@ export const logoutUser = async (req, res, next) => {
       await Session.deleteOne({ _id: sessionId });
     }
 
-    res.clearCookie('sessionId');
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    clearSessionCookies(res);
 
     res.status(204).send();
   } catch (error) {
