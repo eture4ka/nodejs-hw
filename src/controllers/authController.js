@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises';
+﻿import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -149,6 +149,7 @@ export const requestResetEmail = async (req, res, next) => {
 
     try {
       await sendEmail({
+        from: process.env.SMTP_FROM,
         to: user.email,
         subject: 'Reset your password',
         html,
@@ -197,3 +198,4 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
+

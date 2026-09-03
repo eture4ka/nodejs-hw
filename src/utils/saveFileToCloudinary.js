@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+﻿import { v2 as cloudinary } from 'cloudinary';
 
 export const saveFileToCloudinary = (buffer, userId) => {
   cloudinary.config({
@@ -10,6 +10,7 @@ export const saveFileToCloudinary = (buffer, userId) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
+        resource_type: 'image',
         folder: 'avatars',
         public_id: `avatar-${userId}`,
         overwrite: true,
@@ -26,3 +27,4 @@ export const saveFileToCloudinary = (buffer, userId) => {
     stream.end(buffer);
   });
 };
+
